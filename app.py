@@ -49,12 +49,17 @@ def index():
     total = 0
 
     for entry in transactions_db:
-        ren_date = datetime.strptime(entry["date"],'%Y-%m-%d %H:%M:%S')
+        ren_date = datetime.strptime(entry["reg_date"],'%Y-%m-%d %H:%M:%S')
 
         if entry["type"] == "Monthly":
             while ren_date < datetime.now():
-                new_month = ren_date.month + 1
-                ren_date = ren_date.replace(month = new_month)
+                if ren_date.month == 12:
+                    new_month = 1
+                    new_year = ren_date.year + 1
+                else:
+                    new_month = ren_date.month + 1
+                    new_year = ren_date.year
+                ren_date = ren_date.replace(month = new_month, year = new_year)
             entry["ren_date"] = ren_date
 
         elif entry["type"] == "Yearly":
@@ -85,7 +90,7 @@ def add():
 
         today = datetime.now()
 
-        db.execute("INSERT INTO transactions (user_id, name, price, type, reg_date, cancelled) VALUES (?, ?, ?, ?, FALSE)",
+        db.execute("INSERT INTO transactions (user_id, name, price, type, reg_date, cancelled) VALUES (?, ?, ?, ?, ?, FALSE)",
                    session["user_id"], name, price, type, today)
 
         flash("Added!")
@@ -93,7 +98,7 @@ def add():
 
     else:
         return render_template("add.html")
-    
+
 
 
 @app.route("/register", methods=["GET", "POST"])

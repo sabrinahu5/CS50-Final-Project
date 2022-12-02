@@ -61,6 +61,7 @@ def index():
                     new_year = ren_date.year
                 ren_date = ren_date.replace(month = new_month, year = new_year)
             entry["ren_date"] = ren_date
+            total += entry["price"]
 
         elif entry["type"] == "Yearly":
             while ren_date < datetime.now():
@@ -68,14 +69,11 @@ def index():
                 ren_date = ren_date.replace(year = new_year)
             entry["ren_date"] = ren_date
 
+            if entry["ren_date"].month == datetime.now().month:
+                total += entry["price"]
+
         else:
             entry["ren_date"] = ren_date + timedelta(days = int(entry["type"]))
-        
-        current_month = datetime.now().month
-        ren_month = entry["ren_date"].month
-
-        if current_month == ren_month:
-            total += entry["price"]
 
     return render_template("index.html", transactions=transactions_db, total=total)
 

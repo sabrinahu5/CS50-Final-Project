@@ -187,20 +187,6 @@ def login():
     else:
         return render_template("login.html")
 
-# page for cancelling a subscription
-@app.route("/cancel", methods=["GET", "POST"])
-@login_required
-def delete():
-    if request.method == "POST":
-        db.execute("INSERT INTO transactions (user_id, name, price, type, reg_date, cancelled) VALUES (?, ?, ?, ?, ?, FALSE)",
-                   session["user_id"], name, price, type, today)
-
-        flash("Added!")
-        return redirect("/")
-
-    else:
-        return render_template("add.html")
-
 
 @app.route("/logout")
 def logout():

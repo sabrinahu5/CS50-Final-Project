@@ -46,6 +46,7 @@ def after_request(response):
 def index():
     """Show portfolio of stocks"""
     transactions_db = db.execute("SELECT * FROM transactions WHERE user_id = ? AND cancelled = ?", session["user_id"], 0)
+    total = 0
 
     for entry in transactions_db:
         ren_date = datetime.strptime(entry["date"],'%Y-%m-%d %H:%M:%S')
@@ -64,6 +65,12 @@ def index():
 
         else:
             entry["ren_date"] = ren_date + timedelta(days = int(entry["type"]))
+        
+        current_month = datetime.now().month
+        ren_month = entry["ren_date"].month
+
+        if current_month == ren_month:
+            total += entry["price"]
 
     return render_template("index.html", transactions=transactions_db)
 

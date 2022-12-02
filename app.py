@@ -1,6 +1,7 @@
 import os
 import sqlite3
 
+from sql import SQL
 from flask import Flask, flash, redirect, render_template, request, session
 from flask_session import Session
 from tempfile import mkdtemp
@@ -21,7 +22,9 @@ app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
 # Configure to use SQLite database
-db = sqlite3.connect("subscribe.db")
+#connection = sqlite3.connect("subscribe.db", check_same_thread = False)
+#db = connection.cursor()
+db = SQL("sqlite:///subscribe.db")
 
 # Make sure API key is set
 #if not os.environ.get("API_KEY"):
@@ -78,13 +81,19 @@ def register():
     if request.method == "POST":
 
         # Takes in input
-        username = request.form.get("username")
+        firstname = request.form.get("firstname")
+        lastname = request.form.get("lastname")
+        email = request.form.get("email")
         password = request.form.get("password")
         confirmation = request.form.get("confirmation")
 
         # Checks username, password, verification were all submitted
-        if not username:
-            return apology("Must provide username", 400)
+        if not firstname:
+            return apology("Must provide first name", 400)
+        elif not lastname:
+            return apology("Must provide last name", 400)
+        elif not email:
+            return apology("Must provide email", 400)
         elif not password:
             return apology("Must provide password", 400)
         elif not confirmation:
@@ -99,14 +108,14 @@ def register():
             return apology("Passwords must be at least 8 characters long and contain a number")
 
         # Checks if username is taken by looking at if username already exists in database
-        if len(db.execute("SELECT * FROM users WHERE username = ?", username)) > 0:
-            return apology("Username already exists, please pick a new username")
+        if len(db.execute("SELECT * FROM users WHERE email = ?", email)) > 0:
+            return apology("Email is already associated with a registered account")
 
         # Insert new username and password into database
-        db.execute("INSERT INTO users (username, hash) VALUES(?, ?)", username, generate_password_hash(password))
+        db.execute("INSERT INTO users (firstname, lastname, email, hash) VALUES(?, ?, ?, ?)", firstname, lastname, email, generate_password_hash(password))
 
         # Query database for username
-        rows = db.execute("SELECT * FROM users WHERE username = ?", username)
+        rows = db.execute("SELECT * FROM users WHERE email = ?", email)
 
         # Remember which user has logged in
         session["user_id"] = rows[0]["id"]
@@ -129,15 +138,15 @@ def login():
     if request.method == "POST":
 
         # Ensure username was submitted
-        if not request.form.get("username"):
-            return apology("must provide username", 403)
+        if not request.form.get("email"):
+            return apology("must provide email", 403)
 
         # Ensure password was submitted
         elif not request.form.get("password"):
             return apology("must provide password", 403)
 
         # Query database for username
-        rows = db.execute("SELECT * FROM users WHERE username = ?", request.form.get("username"))
+        rows = db.execute("SELECT * FROM users WHERE email = ?", request.form.get("email"))
 
         # Ensure username exists and password is correct
         if len(rows) != 1 or not check_password_hash(rows[0]["hash"], request.form.get("password")):
@@ -164,4 +173,6 @@ def logout():
     # Redirect user to login form
     return redirect("/")
 
-
+def has_numbers(inputString):
+    # Checks if string has numbers in it
+    return any(char.isdigit() for char in inputString)

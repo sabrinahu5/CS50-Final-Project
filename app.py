@@ -78,6 +78,21 @@ def index():
 @app.route("/add", methods=["GET", "POST"])
 @login_required
 def add():
+    if request.method == "POST":
+        name = request.form.get("name")
+        type = request.form.get("type")
+        price = request.form.get("price")
+
+        today = datetime.now()
+
+        db.execute("INSERT INTO transactions (user_id, name, price, type, reg_date, cancelled) VALUES (?, ?, ?, ?, FALSE)",
+                   session["user_id"], name, price, type, today)
+
+        flash("Added!")
+        return redirect("/")
+
+    else:
+        return render_template("add.html")
     
 
 

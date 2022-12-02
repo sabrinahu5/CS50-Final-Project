@@ -75,11 +75,11 @@ def index():
     return render_template("index.html", transactions=transactions_db)
 
 # page for adding a subscription
-"""
 @app.route("/add", methods=["GET", "POST"])
 @login_required
 def add():
-"""
+    
+
 
 @app.route("/register", methods=["GET", "POST"])
 def register():

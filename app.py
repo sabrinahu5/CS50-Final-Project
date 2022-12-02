@@ -1,4 +1,5 @@
 import os
+import sqlite3
 
 from flask import Flask, flash, redirect, render_template, request, session
 from flask_session import Session
@@ -20,11 +21,11 @@ app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
 # Configure to use SQLite database
-db = SQL("sqlite:///subscribe.db")
+db = sqlite3.connect("subscribe.db")
 
 # Make sure API key is set
-if not os.environ.get("API_KEY"):
-    raise RuntimeError("API_KEY not set")
+#if not os.environ.get("API_KEY"):
+    #raise RuntimeError("API_KEY not set")
 
 @app.after_request
 def after_request(response):
@@ -34,12 +35,66 @@ def after_request(response):
     response.headers["Pragma"] = "no-cache"
     return response
 
-# home page w/ transaction indices
+# home page w/ subscription index
 """
 @app.route("/")
 @login_required
 def index():
 """
+
+# page for adding a subscription
+"""
+@app.route("/add", methods=["GET", "POST"])
+@login_required
+def add():
+"""
+
+@app.route("/register", methods=["GET", "POST"])
+def register():
+    """Register user"""
+
+    if request.method == "POST":
+
+        # Takes in input
+        username = request.form.get("username")
+        password = request.form.get("password")
+        confirmation = request.form.get("confirmation")
+
+        # Checks username, password, verification were all submitted
+        if not username:
+            return apology("Must provide username", 400)
+        elif not password:
+            return apology("Must provide password", 400)
+        elif not confirmation:
+            return apology("Must provide confirmation", 400)
+
+        # Checks if password and verification match
+        if password != confirmation:
+            return apology("Please make sure your passwords match")
+
+        # Checks if password is long enough and has at least one number
+        if len(password) < 8 or not has_numbers(password):
+            return apology("Passwords must be at least 8 characters long and contain a number")
+
+        # Checks if username is taken by looking at if username already exists in database
+        if len(db.execute("SELECT * FROM users WHERE username = ?", username)) > 0:
+            return apology("Username already exists, please pick a new username")
+
+        # Insert new username and password into database
+        db.execute("INSERT INTO users (username, hash) VALUES(?, ?)", username, generate_password_hash(password))
+
+        # Query database for username
+        rows = db.execute("SELECT * FROM users WHERE username = ?", username)
+
+        # Remember which user has logged in
+        session["user_id"] = rows[0]["id"]
+
+        # Redirect user to home page
+        return redirect("/")
+
+    # request method is GET
+    else:
+        return render_template("register.html")
 
 @app.route("/login", methods=["GET", "POST"])
 def login():

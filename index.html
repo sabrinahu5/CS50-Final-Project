@@ -1,0 +1,36 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Homepage
+{% endblock %}
+
+{% block main %}
+    <div class="container">
+        <table class="table">
+            <tr>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Price</th>
+                <th>Registration Date</th>
+                <th>Renewal Date</th>
+            </tr>
+            {% for entry in transactions %}
+                <tr>
+                    <td>{{ entry['name'] }}</td>
+                    <td>{{ entry['type'] }}</td>
+                    <td>{{ entry['price'] }}</td>
+                    <td>{{ entry['reg_date'] }}</td>
+                    <td>{{ entry['ren_date'] }}</td>
+
+                </tr>
+            {% endfor %}
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td><strong>Total Due This Month</strong></td>
+                <td>{{ total }}</td>
+            </tr>
+        </table>
+    </div>
+{% endblock %}

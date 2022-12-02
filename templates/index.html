@@ -13,6 +13,7 @@
                 <th>Price</th>
                 <th>Registration Date</th>
                 <th>Renewal Date</th>
+                <th>                </th>
             </tr>
             {% for entry in transactions %}
                 <tr>
@@ -22,10 +23,10 @@
                     <td>{{ entry['reg_date'] }}</td>
                     <td>{{ entry['ren_date'] }}</td>
                     <td>
-                        <button class="cancel">Cancel</button>
-                        <div class = "popup">
+                        <button class="cancel" onclick="openPopup()">Cancel</button>
+                        <div class = "popup" id="popup">
                             <p>Are you sure you would like to cancel this subscription?</p>
-                        <button class="btn">Confirm</button>
+                        <button class="btn" onclick="closePopup()">Confirm</button>
                     </td>
 
                 </tr>
@@ -39,4 +40,13 @@
             </tr>
         </table>
     </div>
+    <script>
+        let popup = document.getElementById("popup");
+        function openPopup(){
+            popup.classList.add("open-popup");
+        }
+        function closePopup(){
+            popup.classList.remove("open-popup");
+        }
+    </script>
 {% endblock %}

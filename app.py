@@ -5,7 +5,7 @@ from flask import Flask, flash, redirect, render_template, request, session
 from flask_session import Session
 from tempfile import mkdtemp
 from werkzeug.security import check_password_hash, generate_password_hash
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 
 from helpers import apology, login_required, lookup, usd
 
@@ -37,11 +37,32 @@ def after_request(response):
 
 
 # home page w/ subscription index
-"""
+
 @app.route("/")
 @login_required
 def index():
-"""
+    """Show portfolio of stocks"""
+    transactions_db = db.execute("SELECT * FROM transactions WHERE user_id = ? AND cancelled = ?", session["user_id"], 0)
+
+    for entry in transactions_db:
+        ren_date = datetime.strptime(entry["date"],'%Y-%m-%d %H:%M:%S')
+
+        if entry["type"] == "Monthly":
+            while ren_date < datetime.now():
+                new_month = ren_date.month + 1
+                ren_date = ren_date.replace(month = new_month)
+            entry["ren_date"] = ren_date
+
+        elif entry["type"] == "Yearly":
+            while ren_date < datetime.now():
+                new_year = ren_date.year + 1
+                ren_date = ren_date.replace(year = new_year)
+            entry["ren_date"] = ren_date
+
+        else:
+            entry["ren_date"] = ren_date + timedelta(days = int(entry["type"]))
+
+    return render_template("index.html", transactions=transactions_db)
 
 # page for adding a subscription
 """
@@ -50,8 +71,7 @@ def index():
 def add():
 """
 
-# change to index
-@app.route("/", methods=["GET", "POST"])
+@app.route("/register", methods=["GET", "POST"])
 def register():
     """Register user"""
 
@@ -143,3 +163,5 @@ def logout():
 
     # Redirect user to login form
     return redirect("/")
+
+

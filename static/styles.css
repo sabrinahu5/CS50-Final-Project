@@ -50,5 +50,18 @@ h2
 .popup
 {
     width:300px;
-
+    top: 0%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.1);
+    background-color:rgb(194, 178, 178);
+    border-radius: 10%;
+    padding: 10px 10px;
+    visibility: hidden;
+    transition: transform 0.4s, top 0.4s;
+}
+.open-popup
+{
+    visibility: visible;
+    top: 50%;
+    transform: translate(-50%, -50%) scale(1);
 }

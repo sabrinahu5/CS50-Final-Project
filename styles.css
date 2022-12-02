@@ -1,7 +1,8 @@
 /* Size for brand */
-nav .navbar-brand
+nav .bg-light
 {
     font-size: xx-large;
+    background-color: lightcyan;
 }
 
 /* Colors for brand */

@@ -35,8 +35,9 @@ def after_request(response):
     response.headers["Pragma"] = "no-cache"
     return response
 
-# home page w/ subscription index
 """
+# home page w/ subscription index
+
 @app.route("/")
 @login_required
 def index():

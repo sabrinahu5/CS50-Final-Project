@@ -1,0 +1,22 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Add New Subscription
+{% endblock %}
+
+{% block main %}
+    <h2>Add New Subscription</h2>
+    <br>
+    <form action="/add" method="post">
+        <div class="mb-3">
+            <input autocomplete="off" autofocus class="form-control mx-auto w-auto" id="name" name="name" placeholder="Subscription Name" type="text">
+        </div>
+        <div class="mb-3">
+            <input class="form-control mx-auto w-auto" id="type" name="type" placeholder="Type of Subscription" type="text">
+        </div>
+        <div class="mb-3">
+            <input class="form-control mx-auto w-auto" id="price" name="price" placeholder="Price Per Unit" type="number" min="0.00" max="10000.00" step="0.01">
+        </div>
+        <button class="btn btn-primary" type="submit">Add New Subscription</button>
+    </form>
+{% endblock %}

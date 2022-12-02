@@ -77,7 +77,7 @@ def index():
         if current_month == ren_month:
             total += entry["price"]
 
-    return render_template("index.html", transactions=transactions_db)
+    return render_template("index.html", transactions=transactions_db, total=total)
 
 # page for adding a subscription
 @app.route("/add", methods=["GET", "POST"])

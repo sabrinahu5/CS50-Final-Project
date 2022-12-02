@@ -1,0 +1,40 @@
+/* Size for brand */
+@import url('https://fonts.googleapis.com/css?family=Poppins');
+
+nav .navbar
+{
+    color:white;
+    text-decoration:none;
+}
+
+/* Colors for brand */
+.white
+{
+    color:white;
+    font-size: xx-large;
+    font-weight:bold;
+    font-family: Poppins, sans-serif;
+    font-style: normal;
+    border-color:black;
+    text-decoration:none;
+}
+
+body
+{
+background-color:black;
+}
+h2
+{
+    color:white;
+}
+.btn
+{
+    background-color:seagreen;
+    border-color:seagreen;
+}
+.btn:hover
+{
+    background-color:mediumseagreen;
+    border-color:mediumseagreen;
+}
+

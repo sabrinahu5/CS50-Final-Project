@@ -12,16 +12,14 @@ nav .navbar
 {
     color:white;
     font-size: xx-large;
-    font-weight:bold;
+    font-weight: bold;
     font-family: Poppins, sans-serif;
-    font-style: normal;
-    border-color:black;
-    text-decoration:none;
+    
 }
 
 body
 {
-background-color:black;
+    background-color:black;
 }
 h2
 {

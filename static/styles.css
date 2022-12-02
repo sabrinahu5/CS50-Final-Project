@@ -22,7 +22,7 @@ body
     background-color:black;
     
 }
-.container
+.table
 {
     color:white;
 }  
@@ -45,5 +45,10 @@ h2
     background-color:crimson;
     color:white;
     border-radius: 30px;
-    
+
+}
+.popup
+{
+    width:300px;
+
 }

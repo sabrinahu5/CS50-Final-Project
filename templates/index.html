@@ -21,7 +21,11 @@
                     <td>{{ entry['price'] }}</td>
                     <td>{{ entry['reg_date'] }}</td>
                     <td>{{ entry['ren_date'] }}</td>
-                    <button class="cancel">Cancel</button>
+                    <td><button class="cancel">Cancel</button></td>
+                    <div class = "popup">
+                        <p>Are you sure you would like to cancel this subscription?</p>
+                        <button class="btn">Confirm</button>
+                    </div>
 
                 </tr>
             {% endfor %}

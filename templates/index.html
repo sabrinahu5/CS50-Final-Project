@@ -19,7 +19,7 @@
                 <tr height = "50px">
                     <td>{{ entry['name'] }}</td>
                     <td>{{ entry['type'] }}</td>
-                    <td>{{ entry['price'] }}</td>
+                    <td>{{ entry['price'] | usd }}</td>
                     <td>{{ entry['reg_date'] }}</td>
                     <td>{{ entry['ren_date'] }}</td>
                     <td>
@@ -37,7 +37,7 @@
                 <td></td>
                 <td></td>
                 <td><strong>Total Due This Month</strong></td>
-                <td>{{ total }}</td>
+                <td>{{ total | usd }}</td>
                 <td></td>
             </tr>
         </table>

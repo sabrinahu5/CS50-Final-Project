@@ -16,7 +16,7 @@
                 <th></th>
             </tr>
             {% for entry in transactions %}
-                <tr height = "50px">
+                <tr>
                     <td>{{ entry['name'] }}</td>
                     <td>{{ entry['type'] }}</td>
                     <td>{{ entry['price'] }}</td>
@@ -27,7 +27,7 @@
                         <div class = "popup" id="popup">
                             <p>Are you sure you would like to cancel this subscription?</p>
                         <div>
-                            <button class="btn" onclick="closePopup()">No</button><a class="nav-link" href="/delete/{{ entry.id }}"><button class="btn" onclick="closePopup()">Yes</button></a>
+                            <a class="nav-link" href="/delete/{{ entry.id }}"><button class="btn" onclick="closePopup()">Yes</button></a><button class="btn" onclick="closePopup()">No</button>
                         </div>
                     </td>
                 </tr>

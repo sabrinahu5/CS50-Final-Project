@@ -89,10 +89,10 @@ def add():
 
 
         month = request.form.get("month")
-        date = request.form.get("date")
+        day = request.form.get("day")
         year = request.form.get("year")
 
-        reg_date = month + "-" + date + "-" + year
+        reg_date = str(month) + "-" + str(day) + "-" + str(year)
 
         reg_date = datetime.strptime(reg_date,'%m-%d-%Y')
 

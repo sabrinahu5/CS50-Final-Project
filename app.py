@@ -1,6 +1,13 @@
 import os
 import sqlite3
 
+import smtplib
+import schedule
+import time
+
+import string
+import random
+
 from sql import SQL
 from flask import Flask, flash, redirect, render_template, request, session
 from flask_session import Session
@@ -8,7 +15,7 @@ from tempfile import mkdtemp
 from werkzeug.security import check_password_hash, generate_password_hash
 from datetime import datetime, timezone, timedelta
 
-from helpers import apology, login_required, lookup, usd
+from helpers import apology, login_required, usd, job, verify_email
 
 # Configure application
 app = Flask(__name__)
@@ -76,6 +83,9 @@ def index():
             if isinstance(entry["type"], int):
                 entry["ren_date"] = ren_date + timedelta(days = int(entry["type"]))
 
+        entry["reg_date"] = datetime.strptime(entry["reg_date"],'%Y-%m-%d %H:%M:%S').date()
+        entry["ren_date"] = entry["ren_date"].date()
+
     return render_template("index.html", transactions=transactions_db, total=total)
 
 # page for adding a subscription
@@ -92,7 +102,7 @@ def add():
         day = request.form.get("day")
         year = request.form.get("year")
 
-        reg_date = str(month) + "-" + str(day) + "-" + str(year)
+        reg_date = month + "-" + day + "-" + year
 
         reg_date = datetime.strptime(reg_date,'%m-%d-%Y')
 
@@ -156,6 +166,11 @@ def register():
         # Remember which user has logged in
         session["user_id"] = rows[0]["id"]
 
+        # Verify email
+        code = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
+        db.execute("INSERT INTO users (code) VALUES(?)", code)
+        verify_email(firstname, email, code)
+
         # Redirect user to home page
         return redirect("/")
 
@@ -218,3 +233,6 @@ def logout():
 def has_numbers(inputString):
     # Checks if string has numbers in it
     return any(char.isdigit() for char in inputString)
+
+
+

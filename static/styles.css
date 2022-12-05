@@ -31,6 +31,13 @@ body
     color:white;
     table-layout: fixed;
 }  
+td
+{
+    padding-left: 10%;
+    padding-right: 10%;
+    padding-top: 10%;
+    padding-bottom: 10%;
+}
 h2
 {
     color:white;

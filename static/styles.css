@@ -63,7 +63,7 @@ h2
     top: 50%;
     transform: translate(-50%, -50%) scale(1);
 }
-.col-sm-4 {
-  padding-right: 5px;
-  padding-left: 5px;
+.row {
+  padding-right: 400px;
+  padding-left: 400px;
 }

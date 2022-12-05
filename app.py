@@ -193,7 +193,7 @@ def login():
 def delete(id):
     """cancelling subscription"""
     db.execute("UPDATE transactions SET cancelled = ? WHERE id = ?", 1, id)
-    return render_template("index.html")
+    return redirect("/")
 
 @app.route("/logout")
 def logout():

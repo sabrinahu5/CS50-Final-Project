@@ -158,7 +158,8 @@ def register():
             return apology("Email is already associated with a registered account")
 
         # Insert new username and password into database
-        db.execute("INSERT INTO users (firstname, lastname, email, hash) VALUES(?, ?, ?, ?)", firstname, lastname, email, generate_password_hash(password))
+        code = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
+        db.execute("INSERT INTO users (firstname, lastname, email, hash, code, verified) VALUES(?, ?, ?, ?, ?, FALSE)", firstname, lastname, email, generate_password_hash(password), code)
 
         # Query database for username
         rows = db.execute("SELECT * FROM users WHERE email = ?", email)
@@ -167,16 +168,39 @@ def register():
         session["user_id"] = rows[0]["id"]
 
         # Verify email
-        code = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
-        db.execute("INSERT INTO users (code) VALUES(?)", code)
         verify_email(firstname, email, code)
+
+        # Redirect user to home page
+        return redirect("/verify")
+
+    # request method is GET
+    else:
+        return render_template("register.html")
+
+
+@app.route("/verify", methods=["GET", "POST"])
+def verify():
+    """Register user"""
+
+    if request.method == "POST":
+
+        # Takes in input
+        code = request.form.get("code")
+
+        correct_code = db.execute("SELECT code FROM users WHERE id = ?", session["user_id"])[0]["code"]
+
+        db.execute("UPDATE users SET verified = 1 WHERE id = ?", session["user_id"])
+
+        # Checks username, password, verification were all submitted
+        if code != str(correct_code):
+            return apology("Invalid verification code", 400)
 
         # Redirect user to home page
         return redirect("/")
 
     # request method is GET
     else:
-        return render_template("register.html")
+        return render_template("verify.html")
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -205,6 +229,9 @@ def login():
 
         # Remember which user has logged in
         session["user_id"] = rows[0]["id"]
+
+        if rows[0]["verified"] == 0:
+            return apology("Email not verified. Please register with another email.")
 
         # Redirect user to home page
         return redirect("/")

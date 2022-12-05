@@ -5,11 +5,7 @@
 {% endblock %}
 
 {% block main %}
-    <div class="container">
-        <div class = "popup" id="popup">
-            <p>Are you sure you would like to cancel this subscription?</p>
-            <a class="nav-link" href="/delete/{{ entry.id }}"><button class="btn" onclick="closePopup()">Yes</button></a><button class="btn" onclick="closePopup()">No</button>
-    </div>
+    
         <table class="table">
             <tr>
                 <th>Name</th>
@@ -20,6 +16,11 @@
                 <th></th>
             </tr>
             {% for entry in transactions %}
+            <!-- <div class="container">
+                <div class = "popup" id="popup">
+                    <p>Are you sure you would like to cancel this subscription?</p>
+                    <a class="nav-link" href="/delete/{{ entry.id }}"><button class="btn" onclick="closePopup()">Yes</button></a><button class="btn" onclick="closePopup()">No</button>
+            </div> -->
                 <tr>
                     <td>{{ entry['name'] }}</td>
                     <td>{{ entry['type'] }}</td>
@@ -30,6 +31,7 @@
                         <button class="cancel" onclick="openPopup()">Cancel</button>
                     </td>
                 </tr>
+                
             {% endfor %}
             <tr>
                 <td></td>

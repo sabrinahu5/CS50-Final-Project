@@ -6,7 +6,10 @@ nav
     padding: 10px 10px;
     background-color:black;
 }
-
+ul
+{
+    display:inline;
+}
  
 .white
 {
@@ -26,15 +29,21 @@ body
 .table
 {
     color:white;
+    table-layout: fixed;
 }  
 h2
 {
     color:white;
 }
+a
+{
+    text-decoration: none;
+}
 .btn
 {
     background-color:seagreen;
     border-color:seagreen;
+    text-decoration: none;
 }
 .btn:hover
 {

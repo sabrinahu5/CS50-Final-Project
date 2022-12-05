@@ -22,7 +22,8 @@ ul
 
 body
 {
-    background-color:black;
+    color: white;
+    background-color: black;
     
 }
 .table
@@ -69,4 +70,8 @@ a
     visibility: visible;
     top: 50%;
     transform: translate(-50%, -50%) scale(1);
+}
+.row {
+  padding-right: 400px;
+  padding-left: 400px;
 }

@@ -12,6 +12,9 @@ For Flask:
 - pip3 install flask
 - pip3 install flask-session
 
+For helpers.py: 
+- pip3 install requests
+
 For Schedule:
 - pip3 install schedule
 

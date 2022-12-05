@@ -87,10 +87,20 @@ def add():
         type = request.form.get("type")
         price = request.form.get("price")
 
-        today = datetime.now()
+
+        month = request.form.get("month")
+        date = request.form.get("date")
+        year = request.form.get("year")
+
+        reg_date = month + "-" + date + "-" + year
+
+        reg_date = datetime.strptime(reg_date,'%m-%d-%Y')
+
+        if request.form.get("registered_today"):
+            reg_date = datetime.now()
 
         db.execute("INSERT INTO transactions (user_id, name, price, type, reg_date, cancelled) VALUES (?, ?, ?, ?, ?, FALSE)",
-                   session["user_id"], name, price, type, today)
+                   session["user_id"], name, price, type, reg_date)
 
         flash("Added!")
         return redirect("/")

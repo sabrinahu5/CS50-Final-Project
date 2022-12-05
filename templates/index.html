@@ -6,6 +6,10 @@
 
 {% block main %}
     <div class="container">
+        <div class = "popup" id="popup">
+            <p>Are you sure you would like to cancel this subscription?</p>
+            <a class="nav-link" href="/delete/{{ entry.id }}"><button class="btn" onclick="closePopup()">Yes</button></a><button class="btn" onclick="closePopup()">No</button>
+    </div>
         <table class="table">
             <tr>
                 <th>Name</th>
@@ -24,11 +28,6 @@
                     <td>{{ entry['ren_date'] }}</td>
                     <td>
                         <button class="cancel" onclick="openPopup()">Cancel</button>
-                        <div class = "popup" id="popup">
-                            <p>Are you sure you would like to cancel this subscription?</p>
-                        <div>
-                            <a class="nav-link" href="/delete/{{ entry.id }}"><button class="btn" onclick="closePopup()">Yes</button></a><button class="btn" onclick="closePopup()">No</button>
-                        </div>
                     </td>
                 </tr>
             {% endfor %}

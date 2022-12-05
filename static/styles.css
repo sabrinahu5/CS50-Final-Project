@@ -6,7 +6,10 @@ nav
     padding: 10px 10px;
     background-color:black;
 }
-
+ul
+{
+    display:inline;
+}
  
 .white
 {
@@ -30,10 +33,15 @@ h2
 {
     color:white;
 }
+a
+{
+    text-decoration: none;
+}
 .btn
 {
     background-color:seagreen;
     border-color:seagreen;
+    text-decoration: none;
 }
 .btn:hover
 {

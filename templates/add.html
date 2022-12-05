@@ -12,7 +12,11 @@
             <input autocomplete="off" autofocus class="form-control mx-auto w-auto" id="name" name="name" placeholder="Subscription Name" type="text">
         </div>
         <div class="mb-3">
-            <input class="form-control mx-auto w-auto" id="type" name="type" placeholder="Type of Subscription" type="text">
+            <select name = "type" id = "type">
+                <option value = "Monthly">Monthly</option>
+                <option value = "Yearly">Yearly</option>
+                <option value = "free_trial">Free Trial</option>
+            </select>
         </div>
         <div class="mb-3">
             <input class="form-control mx-auto w-auto" id="price" name="price" placeholder="Price Per Unit" type="number" min="0.00" max="10000.00" step="0.01">

@@ -73,7 +73,8 @@ def index():
                 total += entry["price"]
 
         else:
-            entry["ren_date"] = ren_date + timedelta(days = int(entry["type"]))
+            if isinstance(entry["type"], int):
+                entry["ren_date"] = ren_date + timedelta(days = int(entry["type"]))
 
     return render_template("index.html", transactions=transactions_db, total=total)
 

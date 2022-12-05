@@ -89,15 +89,14 @@ a
     padding-left: 5px;
 }
 
-.form-check {
+/*.form-check {
     text-align: center;
     vertical-align: center;
-}
+}*/
 
 .form-check-label {
     text-align: center;
     vertical-align: center;
-    display: block;
-    padding-left: 15px;
-    text-indent: -150px;
+    /*padding-left: 15px;
+    text-indent: -150px;*/
   }

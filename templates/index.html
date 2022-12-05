@@ -13,7 +13,11 @@
                 <th>Price</th>
                 <th>Registration Date</th>
                 <th>Renewal Date</th>
+<<<<<<< Updated upstream
                 <th></th>
+=======
+                <th>                </th>
+>>>>>>> Stashed changes
             </tr>
             {% for entry in transactions %}
                 <tr>
@@ -27,7 +31,7 @@
                         <div class = "popup" id="popup">
                             <p>Are you sure you would like to cancel this subscription?</p>
                         <div>
-                            <button class="btn" onclick="closePopup()">No</button><button class="btn" onclick="closePopup()">Yes</button>
+                            <button class="btn" onclick="closePopup()" href="/">No</button><button class="btn" onclick="closePopup()" href="/delete/{{ entry['id'] }}">Yes</button>
                         </div>
                     </td>
                 </tr>

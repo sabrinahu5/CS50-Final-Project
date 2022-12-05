@@ -188,6 +188,12 @@ def login():
     else:
         return render_template("login.html")
 
+@app.route("/delete/<int:id>")
+@login_required
+def delete(id):
+    """cancelling subscription"""
+    db.execute("UPDATE transactions SET cancelled = ? WHERE id = ?", 1, id)
+    return render_template("index.html")
 
 @app.route("/logout")
 def logout():

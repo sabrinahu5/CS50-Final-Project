@@ -37,6 +37,7 @@ Upon entering the website, users must create an account with their first and las
 On the "add" page, users are asked to enter their subscription's name, type (Monthly, Yearly, or Free Trial. If it is a free trial, users are then asked to input the number of days' length.), and registration date.  
 
 The home page displays a table of the subscriptions that a user has inputed, with their type, registration date, and (calculated) renewal date listed.
+Additionally, the bottom of the table displays the total money due from subscriptions for that month, including yearly subscriptions on the months they are renewed.
 
 An email is automated to be sent to remind users whenever a subscription of theirs is within one to two days of expiring. 
 

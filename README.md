@@ -40,4 +40,4 @@ The home page displays a table of the subscriptions that a user has inputed, wit
 
 An email is automated to be sent to remind users whenever a subscription of theirs is within one to two days of expiring. 
 
-On the site header, users can add a new subscription or log out.
+On the site header, users can log out.

@@ -76,6 +76,9 @@ def index():
             if isinstance(entry["type"], int):
                 entry["ren_date"] = ren_date + timedelta(days = int(entry["type"]))
 
+        entry["reg_date"] = datetime.strptime(entry["reg_date"],'%Y-%m-%d %H:%M:%S').date()
+        entry["ren_date"] = entry["ren_date"].date()
+
     return render_template("index.html", transactions=transactions_db, total=total)
 
 # page for adding a subscription
@@ -92,7 +95,7 @@ def add():
         day = request.form.get("day")
         year = request.form.get("year")
 
-        reg_date = str(month) + "-" + str(day) + "-" + str(year)
+        reg_date = month + "-" + day + "-" + year
 
         reg_date = datetime.strptime(reg_date,'%m-%d-%Y')
 

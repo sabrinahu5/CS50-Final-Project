@@ -41,4 +41,4 @@ Additionally, the bottom of the table displays the total money due from subscrip
 
 An email is automated to be sent to remind users whenever a subscription of theirs is within one to two days of expiring. 
 
-On the site header, users can add a new subscription or log out.
+On the site header, users can log out.

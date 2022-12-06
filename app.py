@@ -51,6 +51,7 @@ def after_request(response):
 @app.route("/")
 @login_required
 def index():
+    
     firstnames = db.execute("SELECT firstname FROM users WHERE id = ?", session["user_id"])  
     lastnames = db.execute("SELECT lastname FROM users WHERE id = ?", session["user_id"])  
     first_name = firstnames[0]["firstname"] 
@@ -59,10 +60,17 @@ def index():
     transactions_db = db.execute("SELECT * FROM transactions WHERE user_id = ? AND cancelled = ?", session["user_id"], 0)
     total = 0
 
+    user_verified = db.execute("SELECT lastname FROM users WHERE id = ?", session["user_id"])  
+    user_verified_bool = user_verified[0]["verified"]
+
+    if user_verified_bool == 0:
+            return apology("User not verified", 400)
+
     for entry in transactions_db:
         """Adds date of registration and renewal for subscription"""
         reg_date = datetime.strptime(entry["reg_date"],'%Y-%m-%d %H:%M:%S')
         ren_date = datetime.strptime(entry["reg_date"],'%Y-%m-%d %H:%M:%S')
+        entry["ren_date"] = ren_date
 
         if entry["type"] == "Monthly":
             while ren_date < datetime.now():
@@ -104,9 +112,9 @@ def index():
                 total += entry["price"]
 
         else:
-            if isinstance(entry["type"], int):
-                entry["ren_date"] = ren_date + timedelta(days = int(entry["type"]))
-
+            entry["ren_date"] = ren_date + timedelta(days = int(entry["type"]))
+            entry["type"] = "Free Trial"
+            
         entry["reg_date"] = datetime.strptime(entry["reg_date"],'%Y-%m-%d %H:%M:%S').date()
         entry["ren_date"] = entry["ren_date"].date()
 
@@ -119,12 +127,27 @@ def add():
     if request.method == "POST":
         name = request.form.get("name")
         type = request.form.get("type")
+        if type == "free_trial":
+            type = request.form.get("trial_dates")
+        
         price = request.form.get("price")
 
 
         month = request.form.get("month")
         day = request.form.get("day")
         year = request.form.get("year")
+
+        if not name:
+            return apology("Must provide subscription name", 400)
+        elif not type:
+            return apology("Must provide subscription type", 400)
+        elif type == "free_trial":
+            if not trial_dates:
+                return apology("Must provide length of free trial", 400)
+        elif not price:
+            return apology("Must provide subscription price", 400)
+        elif not month or not day or not year:
+            return apology("Must provide valid subscription date", 400)
 
         reg_date = month + "-" + day + "-" + year
 
@@ -213,13 +236,12 @@ def verify():
 
         correct_code = db.execute("SELECT code FROM users WHERE id = ?", session["user_id"])[0]["code"]
 
-        db.execute("UPDATE users SET verified = 1 WHERE id = ?", session["user_id"])
-
         # Checks username, password, verification were all submitted
         if code != str(correct_code):
             return apology("Invalid verification code", 400)
 
         # Redirect user to home page
+        db.execute("UPDATE users SET verified = 1 WHERE id = ?", session["user_id"])
         return redirect("/")
 
     # request method is GET

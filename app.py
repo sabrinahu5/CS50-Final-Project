@@ -51,13 +51,19 @@ def after_request(response):
 @app.route("/")
 @login_required
 def index():
+    """Gets first and last name of user to display on the homepage"""
     firstnames = db.execute("SELECT firstname FROM users WHERE id = ?", session["user_id"])  
     lastnames = db.execute("SELECT lastname FROM users WHERE id = ?", session["user_id"])  
     first_name = firstnames[0]["firstname"] 
     last_name = lastnames[0]["lastname"] 
-    """Show portfolio of stocks"""
+    
     transactions_db = db.execute("SELECT * FROM transactions WHERE user_id = ? AND cancelled = ?", session["user_id"], 0)
     total = 0
+    #checks if user is verified
+    user_verified = db.execute("SELECT lastname FROM users WHERE id = ?", session["user_id"])  
+    user_verified_bool = user_verified[0]["verified"]
+    if user_verified_bool == 0:
+            return apology("User not verified", 400)
 
     for entry in transactions_db:
         reg_date = datetime.strptime(entry["reg_date"],'%Y-%m-%d %H:%M:%S')
@@ -81,16 +87,6 @@ def index():
                 else:
                     ren_date = ren_date.replace(month = new_month, year = new_year, day = reg_date.day)
                 
-
-                """if reg_date.day == 28 and reg_date.month == 2:
-                    if new_month == 2:
-                        new_day = 28
-                    elif new_month == 1 or new_month == 3 or new_month == 5 or new_month == 7 or new_month == 8 or new_month == 10 or new_month == 12:
-                        new_day = 31
-                    else:
-                        new_day = 30"""
-                    
-                """ren_date = ren_date.replace(month = new_month, year = new_year)"""
             entry["ren_date"] = ren_date
             total += entry["price"]
 
@@ -128,7 +124,7 @@ def add():
         month = request.form.get("month")
         day = request.form.get("day")
         year = request.form.get("year")
-
+        #checks if all fields are filled out / and are valid
         if not name:
             return apology("Must provide subscription name", 400)
         elif not type:
@@ -147,7 +143,7 @@ def add():
 
         if request.form.get("registered_today"):
             reg_date = datetime.now()
-
+        #adds new subscription for user
         db.execute("INSERT INTO transactions (user_id, name, price, type, reg_date, cancelled) VALUES (?, ?, ?, ?, ?, FALSE)",
                    session["user_id"], name, price, type, reg_date)
 
@@ -228,13 +224,12 @@ def verify():
 
         correct_code = db.execute("SELECT code FROM users WHERE id = ?", session["user_id"])[0]["code"]
 
-        db.execute("UPDATE users SET verified = 1 WHERE id = ?", session["user_id"])
-
         # Checks username, password, verification were all submitted
         if code != str(correct_code):
             return apology("Invalid verification code", 400)
 
         # Redirect user to home page
+        db.execute("UPDATE users SET verified = 1 WHERE id = ?", session["user_id"])
         return redirect("/")
 
     # request method is GET

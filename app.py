@@ -136,7 +136,7 @@ def add():
         elif type == "free_trial":
             if not trial_dates:
                 return apology("Must provide length of free trial", 400)
-        elif not price:
+        elif not price and type != "free_trial":
             return apology("Must provide subscription price", 400)
         elif not month or not day or not year:
             return apology("Must provide valid subscription date", 400)

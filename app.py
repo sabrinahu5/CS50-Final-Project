@@ -62,6 +62,7 @@ def index():
     for entry in transactions_db:
         reg_date = datetime.strptime(entry["reg_date"],'%Y-%m-%d %H:%M:%S')
         ren_date = datetime.strptime(entry["reg_date"],'%Y-%m-%d %H:%M:%S')
+        entry["ren_date"] = ren_date
 
         if entry["type"] == "Monthly":
             while ren_date < datetime.now():
@@ -103,9 +104,8 @@ def index():
                 total += entry["price"]
 
         else:
-            if isinstance(entry["type"], int):
-                entry["ren_date"] = ren_date + timedelta(days = int(entry["type"]))
-
+            entry["ren_date"] = ren_date + timedelta(days = int(entry["type"]))
+            
         entry["reg_date"] = datetime.strptime(entry["reg_date"],'%Y-%m-%d %H:%M:%S').date()
         entry["ren_date"] = entry["ren_date"].date()
 
@@ -118,6 +118,9 @@ def add():
     if request.method == "POST":
         name = request.form.get("name")
         type = request.form.get("type")
+        if type == "free_trial":
+            type = request.form.get("trial_dates")
+        
         price = request.form.get("price")
 
 

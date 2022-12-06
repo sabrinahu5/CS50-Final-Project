@@ -73,8 +73,6 @@ a
 {
     visibility: visible;
     transform: translate(-50%, -50%) scale(1);
-    /* top: 50%;
-    right:50%; */
 }
 .row {
     padding-right: 20%;
@@ -90,7 +88,10 @@ a
     text-align: center;
     vertical-align: center;
 }*/
-
+.nav li
+{
+    display: inline-block;
+}
 .form-check-label {
     text-align: center;
     vertical-align: center;

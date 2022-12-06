@@ -56,6 +56,7 @@ def index():
     total = 0
 
     for entry in transactions_db:
+        reg_date = datetime.strptime(entry["reg_date"],'%Y-%m-%d %H:%M:%S')
         ren_date = datetime.strptime(entry["reg_date"],'%Y-%m-%d %H:%M:%S')
 
         if entry["type"] == "Monthly":
@@ -66,7 +67,25 @@ def index():
                 else:
                     new_month = ren_date.month + 1
                     new_year = ren_date.year
-                ren_date = ren_date.replace(month = new_month, year = new_year)
+
+                
+                if new_month == 2 and (reg_date.day == 29 or reg_date.day == 30 or reg_date.day == 31):
+                    ren_date = ren_date.replace(month = new_month, year = new_year, day = 28)
+                elif (new_month == 4 or new_month == 6 or new_month == 9 or new_month == 11) and (reg_date.day == 31):
+                    ren_date = ren_date.replace(month = new_month, year = new_year, day = 30)
+                else:
+                    ren_date = ren_date.replace(month = new_month, year = new_year, day = reg_date.day)
+                
+
+                """if reg_date.day == 28 and reg_date.month == 2:
+                    if new_month == 2:
+                        new_day = 28
+                    elif new_month == 1 or new_month == 3 or new_month == 5 or new_month == 7 or new_month == 8 or new_month == 10 or new_month == 12:
+                        new_day = 31
+                    else:
+                        new_day = 30"""
+                    
+                """ren_date = ren_date.replace(month = new_month, year = new_year)"""
             entry["ren_date"] = ren_date
             total += entry["price"]
 

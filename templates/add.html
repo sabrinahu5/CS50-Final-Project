@@ -5,8 +5,25 @@
 {% endblock %}
 
 {% block main %}
+    <head>
+        <script>
+            function showFreeTrial(answer) {
+                console.log(answer.value);
+                if (answer.value == "free_trial") {
+                    document.getElementById('trial_dates_title').style.display='block';
+                    document.getElementById('trial_dates').style.display='block';
+                }
+                else {
+                    document.getElementById('trial_dates_title').style.display='none';
+                    document.getElementById('trial_dates_title').style.display='none';
+                }
+            };
+        </script>
+    </head>
+
     <h2>Add New Subscription</h2>
     <br>
+
     <form action="/add" method="post">
         Subscription Name
         <div class="mb-3">
@@ -15,11 +32,16 @@
 
         Registration Type
         <div class="mb-3">
-            <select name = "type" id = "type">
+            <select name = "type" id = "type" onchange="showFreeTrial(this)">
                 <option value = "Monthly">Monthly</option>
                 <option value = "Yearly">Yearly</option>
                 <option value = "free_trial">Free Trial</option>
             </select>
+        </div>
+
+        <div class="mb-3">
+            <p id="trial_dates_title" style="display:none">Number of Days</p>
+            <input autocomplete="off" autofocus class="form-control mx-auto w-auto" id="trial_dates" name="trial_dates" type="number" min="1" max="99" style="display:none">
         </div>
 
         Registration Date

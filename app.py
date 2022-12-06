@@ -51,6 +51,7 @@ def after_request(response):
 @app.route("/")
 @login_required
 def index():
+    
     firstnames = db.execute("SELECT firstname FROM users WHERE id = ?", session["user_id"])  
     lastnames = db.execute("SELECT lastname FROM users WHERE id = ?", session["user_id"])  
     first_name = firstnames[0]["firstname"] 
@@ -58,6 +59,12 @@ def index():
     """Show portfolio of stocks"""
     transactions_db = db.execute("SELECT * FROM transactions WHERE user_id = ? AND cancelled = ?", session["user_id"], 0)
     total = 0
+
+    user_verified = db.execute("SELECT lastname FROM users WHERE id = ?", session["user_id"])  
+    user_verified_bool = user_verified[0]["verified"]
+
+    if user_verified_bool == 0:
+            return apology("User not verified", 400)
 
     for entry in transactions_db:
         reg_date = datetime.strptime(entry["reg_date"],'%Y-%m-%d %H:%M:%S')
@@ -228,13 +235,12 @@ def verify():
 
         correct_code = db.execute("SELECT code FROM users WHERE id = ?", session["user_id"])[0]["code"]
 
-        db.execute("UPDATE users SET verified = 1 WHERE id = ?", session["user_id"])
-
         # Checks username, password, verification were all submitted
         if code != str(correct_code):
             return apology("Invalid verification code", 400)
 
         # Redirect user to home page
+        db.execute("UPDATE users SET verified = 1 WHERE id = ?", session["user_id"])
         return redirect("/")
 
     # request method is GET

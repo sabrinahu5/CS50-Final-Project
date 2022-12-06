@@ -51,8 +51,8 @@ def after_request(response):
 @app.route("/")
 @login_required
 def index():
-    firstnames = db.execute("SELECT firstname FROM users WHERE user_id = ?", session["user_id"])  
-    lastnames = db.execute("SELECT lastname FROM users WHERE user_id = ?", session["user_id"])  
+    firstnames = db.execute("SELECT firstname FROM users WHERE id = ?", session["user_id"])  
+    lastnames = db.execute("SELECT lastname FROM users WHERE id = ?", session["user_id"])  
     first_name = firstnames[0]["firstname"] 
     last_name = lastnames[0]["lastname"] 
     """Show portfolio of stocks"""

@@ -55,11 +55,12 @@ def index():
     lastnames = db.execute("SELECT lastname FROM users WHERE id = ?", session["user_id"])  
     first_name = firstnames[0]["firstname"] 
     last_name = lastnames[0]["lastname"] 
-    """Show portfolio of stocks"""
+    
     transactions_db = db.execute("SELECT * FROM transactions WHERE user_id = ? AND cancelled = ?", session["user_id"], 0)
     total = 0
 
     for entry in transactions_db:
+        """Adds date of registration and renewal for subscription"""
         reg_date = datetime.strptime(entry["reg_date"],'%Y-%m-%d %H:%M:%S')
         ren_date = datetime.strptime(entry["reg_date"],'%Y-%m-%d %H:%M:%S')
 

@@ -2,7 +2,6 @@ import os
 import sqlite3
 
 import smtplib
-import schedule
 import time
 
 import string
@@ -12,12 +11,11 @@ import atexit
 from sql import SQL
 from flask import Flask, flash, redirect, render_template, request, session
 from flask_session import Session
-from tempfile import mkdtemp
 from werkzeug.security import check_password_hash, generate_password_hash
-from datetime import datetime, timezone, timedelta
+from datetime import datetime, timedelta
 from apscheduler.schedulers.background import BackgroundScheduler
 
-from helpers import apology, login_required, usd, renew_email, job, verify_email
+from helpers import apology, login_required, usd, job, verify_email#, test_scheduler
 
 # Configure application
 app = Flask(__name__)
@@ -299,7 +297,8 @@ def has_numbers(inputString):
     return any(char.isdigit() for char in inputString)
 
 scheduler = BackgroundScheduler()
-scheduler.add_job(func=renew_email("Maria", "mcheng@college.harvard.edu", "Spotify"), trigger="interval", seconds=20)
+## The below code can help test the background scheduler, and will send an email every 20 seconds
+##scheduler.add_job(func=test_scheduler, trigger="interval", seconds=20)
 scheduler.add_job(func=job, trigger="interval", days=1)
 scheduler.start()
 

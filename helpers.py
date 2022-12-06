@@ -41,37 +41,11 @@ def login_required(f):
         if session.get("user_id") is None:
             return redirect("/login")
         return f(*args, **kwargs)
-    return decorated_function
-
-
-def lookup(symbol):
-    """Look up quote for symbol."""
-
-    # Contact API
-    try:
-        api_key = os.environ.get("API_KEY")
-        url = f"https://cloud.iexapis.com/stable/stock/{urllib.parse.quote_plus(symbol)}/quote?token={api_key}"
-        response = requests.get(url)
-        response.raise_for_status()
-    except requests.RequestException:
-        return None
-
-    # Parse response
-    try:
-        quote = response.json()
-        return {
-            "name": quote["companyName"],
-            "price": float(quote["latestPrice"]),
-            "symbol": quote["symbol"]
-        }
-    except (KeyError, TypeError, ValueError):
-        return None
-
+    return decorated_function\
 
 def usd(value):
     """Format value as USD."""
     return f"${value:,.2f}"
-
 
 def renew_email(user_name, user_email, site):
 
@@ -108,6 +82,48 @@ def job():
     transactions_db = db.execute("SELECT * FROM transactions WHERE user_id = ? AND cancelled = ?", session["user_id"], 0)
     for entry in transactions_db:
         site = entry["name"]
+
+        reg_date = datetime.strptime(entry["reg_date"],'%Y-%m-%d %H:%M:%S')
+        ren_date = datetime.strptime(entry["reg_date"],'%Y-%m-%d %H:%M:%S')
+        entry["ren_date"] = ren_date
+
+        if entry["type"] == "Monthly":
+            while ren_date < datetime.now():
+                if ren_date.month == 12:
+                    new_month = 1
+                    new_year = ren_date.year + 1
+                else:
+                    new_month = ren_date.month + 1
+                    new_year = ren_date.year
+
+                
+                if new_month == 2 and (reg_date.day == 29 or reg_date.day == 30 or reg_date.day == 31):
+                    ren_date = ren_date.replace(month = new_month, year = new_year, day = 28)
+                elif (new_month == 4 or new_month == 6 or new_month == 9 or new_month == 11) and (reg_date.day == 31):
+                    ren_date = ren_date.replace(month = new_month, year = new_year, day = 30)
+                else:
+                    ren_date = ren_date.replace(month = new_month, year = new_year, day = reg_date.day)
+                
+            entry["ren_date"] = ren_date
+            total += entry["price"]
+
+        elif entry["type"] == "Yearly":
+            while ren_date < datetime.now():
+                new_year = ren_date.year + 1
+                ren_date = ren_date.replace(year = new_year)
+            entry["ren_date"] = ren_date
+
+            if entry["ren_date"].month == datetime.now().month:
+                total += entry["price"]
+
+        else:
+            entry["ren_date"] = ren_date + timedelta(days = int(entry["type"]))
+            entry["type"] = "Free Trial"
+            
+        entry["reg_date"] = datetime.strptime(entry["reg_date"],'%Y-%m-%d %H:%M:%S').date()
+        entry["ren_date"] = entry["ren_date"].date()
+        
+
         if datetime.now() + timedelta(days = 2) > entry["ren_date"]:
             renew_email(user_name, user_email, site)
 
@@ -136,4 +152,27 @@ The Subscriptify Team
     s.starttls()
     s.login("fromsubscriptify@gmail.com", "dzvfqqxwkpzyytkr")
     s.sendmail("fromsubscriptify@gmail.com", user_email, message.as_string())
+    s.quit()
+
+
+
+def test_scheduler():
+    message = MIMEMultipart()
+    message['From'] = "fromsubscriptify@gmail.com"
+    message['To'] = "mcheng@college.harvard.edu"
+    message['Subject'] = 'This is a test email'
+
+    mail_content = '''
+Best,
+The Subscriptify Team
+    '''
+
+    #The body and the attachments for the mail
+    message.attach(MIMEText(mail_content, 'plain'))
+
+    # creates SMTP session
+    s = smtplib.SMTP('smtp.gmail.com', 587)
+    s.starttls()
+    s.login("fromsubscriptify@gmail.com", "dzvfqqxwkpzyytkr")
+    s.sendmail("fromsubscriptify@gmail.com", "mcheng@college.harvard.edu", message.as_string())
     s.quit()

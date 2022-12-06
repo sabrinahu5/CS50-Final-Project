@@ -16,11 +16,11 @@
                 <th></th>
             </tr>
             {% for entry in transactions %}
-            <!-- <div class="container">
+            <div class="container">
                 <div class = "popup" id="popup">
                     <p>Are you sure you would like to cancel this subscription?</p>
                     <a class="nav-link" href="/delete/{{ entry.id }}"><button class="btn" onclick="closePopup()">Yes</button></a><button class="btn" onclick="closePopup()">No</button>
-            </div> -->
+            </div>
                 <tr>
                     <td>{{ entry['name'] }}</td>
                     <td>{{ entry['type'] }}</td>
@@ -42,7 +42,7 @@
                 <td></td>
             </tr>
         </table>
-        <button class="btn btn-primary" type="submit"><a href="/add">Add Subscription</a></button>
+        <a href="/add"><button class="btn btn-primary" type="submit">Add Subscription</button></a>
     </div>
     <script>
         let popup = document.getElementById("popup");

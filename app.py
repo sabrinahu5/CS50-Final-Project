@@ -51,6 +51,10 @@ def after_request(response):
 @app.route("/")
 @login_required
 def index():
+    firstnames = db.execute("SELECT firstname FROM users WHERE user_id = ?", session["user_id"])  
+    lastnames = db.execute("SELECT lastname FROM users WHERE user_id = ?", session["user_id"])  
+    first_name = firstnames[0]["firstname"] 
+    last_name = lastnames[0]["lastname"] 
     """Show portfolio of stocks"""
     transactions_db = db.execute("SELECT * FROM transactions WHERE user_id = ? AND cancelled = ?", session["user_id"], 0)
     total = 0
@@ -86,7 +90,7 @@ def index():
         entry["reg_date"] = datetime.strptime(entry["reg_date"],'%Y-%m-%d %H:%M:%S').date()
         entry["ren_date"] = entry["ren_date"].date()
 
-    return render_template("index.html", transactions=transactions_db, total=total)
+    return render_template("index.html", firstname=first_name, lastname=last_name, transactions=transactions_db, total=total)
 
 # page for adding a subscription
 @app.route("/add", methods=["GET", "POST"])

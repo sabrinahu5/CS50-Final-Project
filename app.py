@@ -61,7 +61,7 @@ def index():
     transactions_db = db.execute("SELECT * FROM transactions WHERE user_id = ? AND cancelled = ?", session["user_id"], 0)
     total = 0
     #checks if user is verified
-    user_verified = db.execute("SELECT lastname FROM users WHERE id = ?", session["user_id"])  
+    user_verified = db.execute("SELECT verified FROM users WHERE id = ?", session["user_id"])  
     user_verified_bool = user_verified[0]["verified"]
     if user_verified_bool == 0:
             return apology("User not verified", 400)

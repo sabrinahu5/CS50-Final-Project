@@ -2,20 +2,20 @@ import os
 import sqlite3
 
 import smtplib
-import schedule
 import time
 
 import string
 import random
+import atexit
 
 from sql import SQL
 from flask import Flask, flash, redirect, render_template, request, session
 from flask_session import Session
-from tempfile import mkdtemp
 from werkzeug.security import check_password_hash, generate_password_hash
-from datetime import datetime, timezone, timedelta
+from datetime import datetime, timedelta
+from apscheduler.schedulers.background import BackgroundScheduler
 
-from helpers import apology, login_required, usd, job, verify_email
+from helpers import apology, login_required, usd, job, verify_email#, test_scheduler
 
 # Configure application
 app = Flask(__name__)
@@ -36,6 +36,7 @@ db = SQL("sqlite:///subscribe.db")
 # Make sure API key is set
 #if not os.environ.get("API_KEY"):
     #raise RuntimeError("API_KEY not set")
+
 
 @app.after_request
 def after_request(response):
@@ -132,7 +133,7 @@ def add():
         elif type == "free_trial":
             if not trial_dates:
                 return apology("Must provide length of free trial", 400)
-        elif not price:
+        elif not price and type != "free_trial":
             return apology("Must provide subscription price", 400)
         elif not month or not day or not year:
             return apology("Must provide valid subscription date", 400)
@@ -295,5 +296,10 @@ def has_numbers(inputString):
     # Checks if string has numbers in it
     return any(char.isdigit() for char in inputString)
 
+scheduler = BackgroundScheduler()
+## The below code can help test the background scheduler, and will send an email every 20 seconds
+##scheduler.add_job(func=test_scheduler, trigger="interval", seconds=20)
+scheduler.add_job(func=job, trigger="interval", days=1)
+scheduler.start()
 
-
+atexit.register(lambda: scheduler.shutdown())

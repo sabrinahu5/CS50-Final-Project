@@ -105,6 +105,7 @@ def index():
 
         else:
             entry["ren_date"] = ren_date + timedelta(days = int(entry["type"]))
+            entry["type"] = "Free Trial"
             
         entry["reg_date"] = datetime.strptime(entry["reg_date"],'%Y-%m-%d %H:%M:%S').date()
         entry["ren_date"] = entry["ren_date"].date()

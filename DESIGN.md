@@ -4,7 +4,7 @@ Our inspiration for this project arose about a month ago, when Maria's CVS Care 
 # BACKEND
 To ensure Subscriptify runs smoothly, we used a combination of Python, Flask and SQL components to keep track of our users' data. The first component we completed for the backend of our website was creating subscribe.db, a database that keeps track of users and their current subscriptions, in SQL. Within subscribe.db, we have two tables, users and transactions:
 - users: The table users records the information of each individual user, and has the following fields for each user: 
-    - id (the user's unique ID number), 
+    - id: the user's unique ID number
     - firstname
     - lastname
     - email
@@ -12,10 +12,23 @@ To ensure Subscriptify runs smoothly, we used a combination of Python, Flask and
     - code: the code Subscriptify sends to the user to verify their email address
     - verified: a boolean value that checks whether or not the user has verified their email address
 - transactions: The table transactions keeps track of each user's current and past subscriptions, and has the following fields for each subscription: 
+    - id: the subscription's unique ID number
     - user_id: the foreign key that references the primary key id in users
     - name: the name of the service that the user has subscribed to 
     - price: how much the user has to pay within the designated time frame
-    - type: whether the susbcription is monthly, yearly, or a free trial
+    - type: specifies whether the susbcription is monthly, yearly, or a free trial
     - reg_date: the date the user began their subscription
     - cancelled: whether the subscription has been cancelled or not
-Subscriptify is a Python-based website, so all of the website's functions are contained in the file **app.py**. 
+Subscriptify is a Python-based website, so all of the website's functions are contained in the file **app.py**. The app routes within this file are as follows:
+    - /register: [POST] registers the user into the database once they fill out the required fields appropriately. 
+    - /add: [POST] allows the user to add a subscription to their account once they fill out the required fields appropriately. 
+    - /: This directs the user back to the homepage. 
+    - /verify: [POST] allows the user to access their account once the user enters the correct verification code. 
+    - /login: [POST] logs the user in after they correctly enter their email and password. 
+    - /delete: This takes in the id of the subscription that is to be deleted and 
+    - /logout:
+    - /: This takes the user to the homepage, where the user can add and delete subscriptions. 
+# FRONTEND
+For the interface of our website, we used HTML to create the pages of Subscriptify. 
+The file styles.css gives Subscriptify a clean yet aesthetically pleasing design. 
+

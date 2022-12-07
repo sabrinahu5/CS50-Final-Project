@@ -63,7 +63,7 @@ Best,
 The Subscriptify Team
     '''
 
-    #The body and the attachments for the mail
+    # The body and the attachments for the mail
     message.attach(MIMEText(mail_content, 'plain'))
 
     # creates SMTP session

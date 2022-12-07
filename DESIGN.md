@@ -28,8 +28,11 @@ Subscriptify is a Python-based website, so all of the website's functions are co
     - /delete: This takes in the id of the subscription that is to be deleted and removes it from displaying of the homepage
     - /logout:
     - /: This takes the user to the homepage, where the user can add and delete subscriptions. 
+    
 For register, we decided to add a email verification system for users to register using Python libraries called MIME and SMTP, in order to add another layer or verification to creating a new user.
+
 For add, we have features allows users to add either a monthly or yearly subscription or a free trial. A key technical aspect of this part was calculating the renewal date for the subscriptions, in which we had to consider special cases like subscription registration at the end of the month. Additionally, we calculate the monthly cost in subscriptions, including the months where yearly subscriptions renew.
+
 # FRONTEND
 For the interface of our website, we used HTML to create the pages of Subscriptify. 
 The file styles.css gives Subscriptify a clean yet aesthetically pleasing design. 

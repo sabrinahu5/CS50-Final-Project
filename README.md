@@ -45,5 +45,5 @@ An email is automated to be sent to remind users whenever a subscription of thei
 On the site header, users can log out.
 
 Here is a video link to a project demonstration:
-https://youtu.be/sEi11E6DEmU
+https://youtu.be/sEi11E6DEmU.
 

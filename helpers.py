@@ -69,7 +69,7 @@ The Subscriptify Team
     # creates SMTP session
     s = smtplib.SMTP('smtp.gmail.com', 587)
 
-
+    # login and send email from Subscripfity account
     s.starttls()
     s.login("fromsubscriptify@gmail.com", "dzvfqqxwkpzyytkr")
     s.sendmail("fromsubscriptify@gmail.com", user_email, message.as_string())
@@ -80,6 +80,8 @@ def job():
     user_name = db.execute("SELECT firstname FROM users WHERE user_id = ?", session["user_id"])
     user_email = db.execute("SELECT email FROM users WHERE user_id = ?", session["user_id"])
     transactions_db = db.execute("SELECT * FROM transactions WHERE user_id = ? AND cancelled = ?", session["user_id"], 0)
+    
+    # calculates renewal dates
     for entry in transactions_db:
         site = entry["name"]
 
@@ -123,7 +125,7 @@ def job():
         entry["reg_date"] = datetime.strptime(entry["reg_date"],'%Y-%m-%d %H:%M:%S').date()
         entry["ren_date"] = entry["ren_date"].date()
         
-
+        # sends users a notification email if the selected subscription renews in the next 2 days
         if datetime.now() + timedelta(days = 2) > entry["ren_date"]:
             renew_email(user_name, user_email, site)
 

@@ -6,7 +6,6 @@ import time
 
 import string
 import random
-import atexit
 
 from sql import SQL
 from flask import Flask, flash, redirect, render_template, request, session
@@ -47,32 +46,38 @@ def after_request(response):
     return response
 
 
-# home page w/ subscription index
+# Homepage (index)
 
 @app.route("/")
 @login_required
 def index():
-    """Gets first and last name of user to display on the homepage"""
+    # Gets first and last name of user to display on the homepage
     firstnames = db.execute("SELECT firstname FROM users WHERE id = ?", session["user_id"])  
     lastnames = db.execute("SELECT lastname FROM users WHERE id = ?", session["user_id"])  
     first_name = firstnames[0]["firstname"] 
     last_name = lastnames[0]["lastname"] 
     
+    # Selects all subscriptions to display
     transactions_db = db.execute("SELECT * FROM transactions WHERE user_id = ? AND cancelled = ?", session["user_id"], 0)
     total = 0
-    #checks if user is verified
-    user_verified = db.execute("SELECT verified FROM users WHERE id = ?", session["user_id"])  
+
+    # Checks if user is email verified
+    user_verified = db.execute("SELECT lastname FROM users WHERE id = ?", session["user_id"])  
     user_verified_bool = user_verified[0]["verified"]
     if user_verified_bool == 0:
             return apology("User not verified", 400)
 
+    # Calculates subscription renewal date to display on screen
     for entry in transactions_db:
         reg_date = datetime.strptime(entry["reg_date"],'%Y-%m-%d %H:%M:%S')
         ren_date = datetime.strptime(entry["reg_date"],'%Y-%m-%d %H:%M:%S')
         entry["ren_date"] = ren_date
 
+        # Monthly subscriptions
         if entry["type"] == "Monthly":
+            # Runs until next subscription renewal date (in the future)
             while ren_date < datetime.now():
+                # Wrap-around from December to January
                 if ren_date.month == 12:
                     new_month = 1
                     new_year = ren_date.year + 1
@@ -80,18 +85,21 @@ def index():
                     new_month = ren_date.month + 1
                     new_year = ren_date.year
 
-                
+                # Handles case when subscription was made on the last day of the month or on shorter months
                 if new_month == 2 and (reg_date.day == 29 or reg_date.day == 30 or reg_date.day == 31):
                     ren_date = ren_date.replace(month = new_month, year = new_year, day = 28)
                 elif (new_month == 4 or new_month == 6 or new_month == 9 or new_month == 11) and (reg_date.day == 31):
                     ren_date = ren_date.replace(month = new_month, year = new_year, day = 30)
                 else:
                     ren_date = ren_date.replace(month = new_month, year = new_year, day = reg_date.day)
-                
+            
+            # Updates renewal date and total price of subscriptions this month
             entry["ren_date"] = ren_date
             total += entry["price"]
 
+        # Yearly subscriptions
         elif entry["type"] == "Yearly":
+            # Runs until next subscription renewal date (in the future)
             while ren_date < datetime.now():
                 new_year = ren_date.year + 1
                 ren_date = ren_date.replace(year = new_year)
@@ -99,8 +107,10 @@ def index():
 
             if entry["ren_date"].month == datetime.now().month:
                 total += entry["price"]
-
+        
+        # Free trial
         else:
+            # Shows when free trial ends under the "renewal date"
             entry["ren_date"] = ren_date + timedelta(days = int(entry["type"]))
             entry["type"] = "Free Trial"
             
@@ -109,23 +119,23 @@ def index():
 
     return render_template("index.html", firstname=first_name, lastname=last_name, transactions=transactions_db, total=total)
 
-# page for adding a subscription
+# Page for adding a subscription
 @app.route("/add", methods=["GET", "POST"])
 @login_required
 def add():
     if request.method == "POST":
+
+        # Gets subscription info from user (name, type, price, date)
         name = request.form.get("name")
         type = request.form.get("type")
         if type == "free_trial":
             type = request.form.get("trial_dates")
-        
         price = request.form.get("price")
-
-
         month = request.form.get("month")
         day = request.form.get("day")
         year = request.form.get("year")
-        #checks if all fields are filled out / and are valid
+
+        # Checks if all fields are filled out / and are valid
         if not name:
             return apology("Must provide subscription name", 400)
         elif not type:
@@ -139,12 +149,9 @@ def add():
             return apology("Must provide valid subscription date", 400)
 
         reg_date = month + "-" + day + "-" + year
-
         reg_date = datetime.strptime(reg_date,'%m-%d-%Y')
 
-        if request.form.get("registered_today"):
-            reg_date = datetime.now()
-        #adds new subscription for user
+        # Adds new subscription for user into database
         db.execute("INSERT INTO transactions (user_id, name, price, type, reg_date, cancelled) VALUES (?, ?, ?, ?, ?, FALSE)",
                    session["user_id"], name, price, type, reg_date)
 
@@ -155,10 +162,9 @@ def add():
         return render_template("add.html")
 
 
-
+# Registers new user
 @app.route("/register", methods=["GET", "POST"])
 def register():
-    """Register user"""
 
     if request.method == "POST":
 
@@ -213,19 +219,15 @@ def register():
     else:
         return render_template("register.html")
 
-
+# Verifies new user with email verification
 @app.route("/verify", methods=["GET", "POST"])
 def verify():
-    """Register user"""
 
     if request.method == "POST":
 
-        # Takes in input
+        # Takes in user's verification code input and checks if it matches the user's given code
         code = request.form.get("code")
-
         correct_code = db.execute("SELECT code FROM users WHERE id = ?", session["user_id"])[0]["code"]
-
-        # Checks username, password, verification were all submitted
         if code != str(correct_code):
             return apology("Invalid verification code", 400)
 
@@ -275,16 +277,16 @@ def login():
     else:
         return render_template("login.html")
 
+# Deletes subscription entry
 @app.route("/delete/<int:id>")
 @login_required
 def delete(id):
-    """cancelling subscription"""
     db.execute("UPDATE transactions SET cancelled = ? WHERE id = ?", 1, id)
     return redirect("/")
 
+# Logs user out
 @app.route("/logout")
 def logout():
-    """Log user out"""
 
     # Forget any user_id
     session.clear()
@@ -299,7 +301,7 @@ def has_numbers(inputString):
 scheduler = BackgroundScheduler()
 ## The below code can help test the background scheduler, and will send an email every 20 seconds
 ##scheduler.add_job(func=test_scheduler, trigger="interval", seconds=20)
+
+# schedules "job" (sends emails to users who have a subscription about to expire in the next 2 days) to run every day
 scheduler.add_job(func=job, trigger="interval", days=1)
 scheduler.start()
-
-atexit.register(lambda: scheduler.shutdown())

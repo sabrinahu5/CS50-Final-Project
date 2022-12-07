@@ -49,6 +49,7 @@ def usd(value):
 
 def renew_email(user_name, user_email, site):
 
+    # Format message content using MIME
     message = MIMEMultipart()
     message['From'] = "fromsubscriptify@gmail.com"
     message['To'] = user_email
@@ -63,10 +64,10 @@ Best,
 The Subscriptify Team
     '''
 
-    #The body and the attachments for the mail
+    # Combine body and attachments for email
     message.attach(MIMEText(mail_content, 'plain'))
 
-    # creates SMTP session
+    # Uses SMTP
     s = smtplib.SMTP('smtp.gmail.com', 587)
 
     # login and send email from Subscripfity account
@@ -159,10 +160,13 @@ The Subscriptify Team
 
 
 def test_scheduler():
+    replace = "mcheng@college.harvard.edu" #replace with valid email address of recipient
+
     message = MIMEMultipart()
     message['From'] = "fromsubscriptify@gmail.com"
-    message['To'] = "mcheng@college.harvard.edu"
+    message['To'] = replace
     message['Subject'] = 'This is a test email'
+    
 
     mail_content = '''
 Best,
@@ -172,9 +176,10 @@ The Subscriptify Team
     #The body and the attachments for the mail
     message.attach(MIMEText(mail_content, 'plain'))
 
+
     # creates SMTP session
     s = smtplib.SMTP('smtp.gmail.com', 587)
     s.starttls()
     s.login("fromsubscriptify@gmail.com", "dzvfqqxwkpzyytkr")
-    s.sendmail("fromsubscriptify@gmail.com", "mcheng@college.harvard.edu", message.as_string())
+    s.sendmail("fromsubscriptify@gmail.com", replace, message.as_string())
     s.quit()

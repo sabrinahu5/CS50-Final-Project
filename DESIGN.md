@@ -21,14 +21,14 @@ To ensure Subscriptify runs smoothly, we used a combination of Python, Flask and
     - cancelled: whether the subscription has been cancelled or not
   
 Subscriptify is a Python-based website, so all of the website's functions are contained in the file **app.py**. The app routes within this file are as follows:
-    * /register: [POST] registers the user into the database once they fill out the required fields appropriately. 
-    * /add: [POST] allows the user to add a subscription to their account once they fill out the required fields appropriately. 
-    * /: This directs the user back to the homepage. 
-    * /verify: [POST] allows the user to access their account once the user enters the correct verification code. 
-    * /login: [POST] logs the user in after they correctly enter their email and password. 
-    * /delete: This takes in the id of the subscription that is to be deleted and removes it from displaying of the homepage
-    * /logout:
-    * /: This takes the user to the homepage, where the user can add and delete subscriptions. 
+- /register: [POST] registers the user into the database once they fill out the required fields appropriately. 
+- /add: [POST] allows the user to add a subscription to their account once they fill out the required fields appropriately. 
+- /: This directs the user back to the homepage. 
+- /verify: [POST] allows the user to access their account once the user enters the correct verification code. 
+- /login: [POST] logs the user in after they correctly enter their email and password. 
+- /delete: This takes in the id of the subscription that is to be deleted and removes it from displaying of the homepage
+- /logout:
+- /: This takes the user to the homepage, where the user can add and delete subscriptions. 
     
 For register, we decided to add a email verification system for users to register using Python libraries called MIME and SMTP, in order to add another layer or verification to creating a new user.
 

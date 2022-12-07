@@ -39,10 +39,10 @@ Finally, we decided to include a feature in our program to notify users when a s
 Additionally files in our program include **sql.py**, which was sourced from CS50's github and sets up SQL for Python, and **helpers.py**, which was sourced from Problem Set 9 in CS50's course and contains functions like apology() (which posts errors in the form of apology.html--- in our case, a cute picture of Remy sleeping), and login_required() (which requires login to grant certain HTML files).
 
 More importantly, the bulk of our email verification system and email notification system is contained in **helpers.py**, where we have the functions:
-    - renew_email(): sends the subscription renewal emails
-    - job(): calculates when subscription renewal emails need to be sent and calls renew_email()
-    - verify_email(): verifies users through email with a code
-    - test_scheduler(): a function to test the email functions without flask having to be running all the time.
+- renew_email(): sends the subscription renewal emails
+- job(): calculates when subscription renewal emails need to be sent and calls renew_email()
+- verify_email(): verifies users through email with a code
+- test_scheduler(): a function to test the email functions without flask having to be running all the time.
 
 # FRONTEND
 For the interface of our website, we used HTML to create the pages of Subscriptify. 
